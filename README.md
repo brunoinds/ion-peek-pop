@@ -5,15 +5,12 @@ Bring iOS Peek-Pop (3D touch) to your Ionic/Vue apps!
 Provides Haptic feedback, touch recognition, pixel matching animation.
 
 
-<video src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library.mp4"></video>
-
-
-
-Add image:
-<img src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library.png">
+https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
 
 ## Instalation
-
+```bash
+npm install ion-peek-pop
+```
 
 ## How to use
 
