@@ -17,7 +17,9 @@
 </p>
 
 <p align="center">
-  <img height="200" src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
+    <img height="290" src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
+    <img height="290" src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
+    <img height="290" src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
 </p>
 
 ### Features
