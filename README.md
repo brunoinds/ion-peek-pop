@@ -18,7 +18,7 @@
 
 
 <p align="center">
-  <img src="https://img.shields.io/maintenance/yes/2024?style=flat-square"/>
+  <img src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
 </p>
 
 ### Features
