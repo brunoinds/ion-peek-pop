@@ -8,31 +8,19 @@ Provides Haptic feedback, touch recognition, pixel matching animation.
 
 https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
 
+### Features
+- **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
+- **Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
+- **Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
+
+
 
 ## Instalation
 ```bash
 npm install ion-peek-pop
 ```
 
-## How to use
-
-
-## Basic Component Structure
-```vue
-<IonPeekPop @onPop="">
-    <template v-slot:item>
-        <!--The peekable item or button goes here-->
-    </template>
-    <template v-slot:popover>
-        <!--Here goes what will be shown when peeked-->
-    </template>
-    <template v-slot:contextmenu>
-        <!--Here goes the context menu items-->
-    </template>
-</IonPeekPop>
-```
-
-## Examples (Demos)
+## Usage
 You can access the demos files in the `./demos` folder
 
 ### Photo Library
@@ -111,12 +99,35 @@ import 'ion-peek-pop/styles.css';
 
 The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications, offering an immersive 3D touch experience 📱. This component is designed to enhance user interaction through haptic feedback, precise touch recognition, and smooth pixel-matching animations, bringing a new level of depth to the application's interface.
 
-### Features
-- **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
-- **Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
-- **Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
 
-### `IonPeekPop` Slots
+# Documentation
+## Basic Component Structure
+```vue
+<IonPeekPop @onPop="">
+    <template v-slot:item>
+        <!--The peekable item or button goes here-->
+    </template>
+    <template v-slot:popover>
+        <!--Here goes what will be shown when peeked-->
+    </template>
+    <template v-slot:contextmenu>
+        <!--Here goes the context menu items-->
+    </template>
+</IonPeekPop>
+```
+
+## How to Import
+```vue
+<script setup lang="ts">
+import { IonPeekPop, IonPeekPopContextMenuItem } from 'ion-peek-pop';
+import 'ion-peek-pop/styles.css';
+</script>
+```
+
+## Components
+
+### IonPeekPop
+### `Slots`
 
 | Prop          | Type     | Description                                      | Default |
 |---------------|----------|--------------------------------------------------|---------|
@@ -124,15 +135,17 @@ The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications
 | `popover`     | Slot     | Slot for the content shown when peeked.          | N/A     |
 | `contextmenu` | Slot     | Slot for the context menu items.                 | N/A     |
 
-### `IonPeekPop` Events and Callbacks
+### `Events`
 
 | Prop        | Type     | Description                                      | Default |
 |-------------|----------|--------------------------------------------------|---------|
 | `onPop`     | Event    | Triggered when the user pops the item.           | N/A     |
-| `onPeek`    | Callback | Called when the user initiates a peek.           | N/A     |
-| `onDismiss` | Callback | Called when the peek view is dismissed.          | N/A     |
+| `onPeek`    | Event | Triggered when the user initiates a peek.           | N/A     |
+| `onDismiss` | Event | Triggered when the peek view is dismissed.          | N/A     |
 
-### `IonPeekPopContextMenuItem` Properties
+
+### IonPeekPopContextMenuItem
+### `Properties`
 
 | Prop       | Type    | Description                                      | Default |
 |------------|---------|--------------------------------------------------|---------|
@@ -141,8 +154,6 @@ The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications
 | `separate` | Boolean | Adds separation from other items.                | `false` |
 | `color`    | String  | Custom color for the item, enhancing emphasis.   | N/A     |
 
-### Styling
-The component's appearance and theming are managed through a dedicated `styles.css` file, ensuring consistency and ease of customization.
 
-### Usage
-`IonPeekPop` is showcased within the demos folder, particularly in the "Photo Library" and "Ion-Item in Ion-List" examples, demonstrating its versatility and ease of integration into Ionic/Vue projects.
+## Styling
+The component's appearance and theming are managed through a dedicated `styles.css` file, ensuring consistency and ease of customization.
