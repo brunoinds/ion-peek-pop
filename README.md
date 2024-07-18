@@ -17,9 +17,6 @@
 </p>
 
 
-<p align="center">
-  <img src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
-</p>
 
 ### Features
 - **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
@@ -32,6 +29,10 @@
 ```bash
 npm install ion-peek-pop
 ```
+
+<p align="center">
+  <img src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
+</p>
 
 ## Usage
 ### Basic Example
