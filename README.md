@@ -16,7 +16,9 @@
   <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
-
+<p align="center">
+  <img height="200" src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
+</p>
 
 ### Features
 - **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
@@ -30,9 +32,6 @@
 npm install ion-peek-pop
 ```
 
-<p align="center">
-  <img src="https://github.com/brunoinds/ion-peek-pop/blob/main/demos/photo-library-short.gif"/>
-</p>
 
 ## Usage
 ### Basic Example
@@ -59,6 +58,8 @@ import 'ion-peek-pop/styles.css';
 
 
 You can access the demos files in the `./demos` folder
+
+## Examples
 
 ### Photo Library Example
 ```vue
@@ -133,7 +134,6 @@ import { IonPeekPop, IonPeekPopContextMenuItem } from 'ion-peek-pop';
 import 'ion-peek-pop/styles.css';
 </script>
 ```
-
 
 # Documentation
 The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications, offering an immersive 3D touch experience 📱. This component is designed to enhance user interaction through haptic feedback, precise touch recognition, and smooth pixel-matching animations, bringing a new level of depth to the application's interface.
