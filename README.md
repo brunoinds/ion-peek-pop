@@ -23,9 +23,9 @@
 </p>
 
 ### Features
-- **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
-- **Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
-- **Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
+- **👉 3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
+- **📳 Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
+- **✨ Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
 
 ## Table of Contents
 
