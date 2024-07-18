@@ -23,6 +23,30 @@ npm install ion-peek-pop
 ## Usage
 You can access the demos files in the `./demos` folder
 
+
+```vue
+<template>
+    <IonPeekPop @onPop="">
+        <template v-slot:item>
+            <IonButton>Peek me (press and hold)</IonButton>
+        </template>
+        <template v-slot:popover>
+            <div>Hello World from the Peek Window</div>
+        </template>
+        <template v-slot:contextmenu>
+            <!--Optional contextmenu items-->
+        </template>
+    </IonPeekPop>
+</template>
+
+<script setup lang="ts">
+import { IonPeekPop, IonPeekPopContextMenuItem } from 'ion-peek-pop';
+import 'ion-peek-pop/styles.css';
+</script>
+```
+
+
+
 ### Photo Library
 ```vue
 <template>
