@@ -16,15 +16,10 @@
   <!-- ALL-CONTRIBUTORS-BADGE:END -->
 </p>
 
-# IonPeekPop
 
-Bring iOS Peek-Pop (3D touch) to your Ionic/Vue apps!
-
-Provides Haptic feedback, touch recognition, pixel matching animation.
-
-
-
-https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
+<p align="center">
+  <img src="https://img.shields.io/maintenance/yes/2024?style=flat-square"/>
+</p>
 
 ### Features
 - **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
