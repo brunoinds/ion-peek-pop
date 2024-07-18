@@ -27,6 +27,12 @@
 - **Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
 - **Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
 
+## Table of Contents
+
+- [Instalation](#instalation)
+- [Usage](#usage)
+- [Documentation](#documentation)
+- [Demos](#demos)
 
 
 ## Instalation
