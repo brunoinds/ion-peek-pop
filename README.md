@@ -21,9 +21,7 @@ npm install ion-peek-pop
 ```
 
 ## Usage
-You can access the demos files in the `./demos` folder
-
-
+### Basic Example
 ```vue
 <template>
     <IonPeekPop @onPop="">
@@ -46,8 +44,9 @@ import 'ion-peek-pop/styles.css';
 ```
 
 
+You can access the demos files in the `./demos` folder
 
-### Photo Library
+### Photo Library Example
 ```vue
 <template>
     <IonPeekPop>
@@ -79,7 +78,7 @@ import 'ion-peek-pop/styles.css';
 https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
 
 
-### Ion-Item in Ion-List
+### Ion-Item in Ion-List Example
 ```vue
 <template>
     <ion-list>
