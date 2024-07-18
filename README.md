@@ -1,3 +1,21 @@
+<p align="center"><br><img src="https://user-images.githubusercontent.com/236501/85893648-1c92e880-b7a8-11ea-926d-95355b8175c7.png" width="128" height="128" /></p>
+<h3 align="center">Ionic Peek Pop</h3>
+<p align="center"><strong><code>brunoinds/ion-peek-pop</code></strong></p>
+<p align="center">
+  Immersive 3D touch experience for Ionic/Vue applications.
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/maintenance/yes/2024?style=flat-square" />
+  <a href="https://www.npmjs.com/package/ion-peek-pop"><img src="https://img.shields.io/npm/l/ion-peek-pop?style=flat-square" /></a>
+  <br>
+  <a href="https://www.npmjs.com/package/ion-peek-pop"><img src="https://img.shields.io/npm/dw/ion-peek-pop?style=flat-square" /></a>
+  <a href="https://www.npmjs.com/package/ion-peek-pop"><img src="https://img.shields.io/npm/v/ion-peek-pop?style=flat-square" /></a>
+  <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+  <a href="#contributors-"><img src="https://img.shields.io/badge/all%20contributors-1-orange?style=flat-square" /></a>
+  <!-- ALL-CONTRIBUTORS-BADGE:END -->
+</p>
+
 # IonPeekPop
 
 Bring iOS Peek-Pop (3D touch) to your Ionic/Vue apps!
