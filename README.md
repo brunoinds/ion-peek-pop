@@ -9,8 +9,6 @@ Provides Haptic feedback, touch recognition, pixel matching animation.
 https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
 
 
-https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
-
 ## Instalation
 ```bash
 npm install ion-peek-pop
@@ -66,6 +64,8 @@ import { IonPeekPop, IonPeekPopContextMenuItem } from 'ion-peek-pop';
 import 'ion-peek-pop/styles.css';
 </script>
 ```
+https://github.com/user-attachments/assets/e097ca51-7118-4775-9147-441e3c683f43
+
 
 ### Ion-Item in Ion-List
 ```vue
@@ -108,3 +108,41 @@ import { IonPeekPop, IonPeekPopContextMenuItem } from 'ion-peek-pop';
 import 'ion-peek-pop/styles.css';
 </script>
 ```
+
+The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications, offering an immersive 3D touch experience 📱. This component is designed to enhance user interaction through haptic feedback, precise touch recognition, and smooth pixel-matching animations, bringing a new level of depth to the application's interface.
+
+### Features
+- **3D Touch Experience**: Utilizes advanced touch recognition to provide a tactile interaction, simulating a three-dimensional interaction within a two-dimensional interface.
+- **Haptic Feedback**: Offers immediate tactile feedback to users, enhancing the overall experience and engagement.
+- **Pixel Matching Animation**: Ensures a fluid and responsive animation that matches the touch intensity, providing a seamless transition between states.
+
+### `IonPeekPop` Slots
+
+| Prop          | Type     | Description                                      | Default |
+|---------------|----------|--------------------------------------------------|---------|
+| `item`        | Slot     | Slot for the peekable item or button.            | N/A     |
+| `popover`     | Slot     | Slot for the content shown when peeked.          | N/A     |
+| `contextmenu` | Slot     | Slot for the context menu items.                 | N/A     |
+
+### `IonPeekPop` Events and Callbacks
+
+| Prop        | Type     | Description                                      | Default |
+|-------------|----------|--------------------------------------------------|---------|
+| `onPop`     | Event    | Triggered when the user pops the item.           | N/A     |
+| `onPeek`    | Callback | Called when the user initiates a peek.           | N/A     |
+| `onDismiss` | Callback | Called when the peek view is dismissed.          | N/A     |
+
+### `IonPeekPopContextMenuItem` Properties
+
+| Prop       | Type    | Description                                      | Default |
+|------------|---------|--------------------------------------------------|---------|
+| `icon`     | Prop    | Icon for the menu item.                          | N/A     |
+| `label`    | Prop    | Text label for the menu item.                    | N/A     |
+| `separate` | Boolean | Adds separation from other items.                | `false` |
+| `color`    | String  | Custom color for the item, enhancing emphasis.   | N/A     |
+
+### Styling
+The component's appearance and theming are managed through a dedicated `styles.css` file, ensuring consistency and ease of customization.
+
+### Usage
+`IonPeekPop` is showcased within the demos folder, particularly in the "Photo Library" and "Ion-Item in Ion-List" examples, demonstrating its versatility and ease of integration into Ionic/Vue projects.
