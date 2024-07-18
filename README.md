@@ -120,10 +120,10 @@ import 'ion-peek-pop/styles.css';
 </script>
 ```
 
-The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications, offering an immersive 3D touch experience 📱. This component is designed to enhance user interaction through haptic feedback, precise touch recognition, and smooth pixel-matching animations, bringing a new level of depth to the application's interface.
-
 
 # Documentation
+The `IonPeekPop` component is a sophisticated addition to Ionic/Vue applications, offering an immersive 3D touch experience 📱. This component is designed to enhance user interaction through haptic feedback, precise touch recognition, and smooth pixel-matching animations, bringing a new level of depth to the application's interface.
+
 ## Basic Component Structure
 ```vue
 <IonPeekPop @onPop="">
@@ -149,7 +149,7 @@ import 'ion-peek-pop/styles.css';
 
 ## Components
 
-### IonPeekPop
+## IonPeekPop
 ### `Slots`
 
 | Prop          | Type     | Description                                      | Default |
@@ -167,7 +167,7 @@ import 'ion-peek-pop/styles.css';
 | `onDismiss` | Event | Triggered when the peek view is dismissed.          | N/A     |
 
 
-### IonPeekPopContextMenuItem
+## IonPeekPopContextMenuItem
 ### `Properties`
 
 | Prop       | Type    | Description                                      | Default |
