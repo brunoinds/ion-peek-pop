@@ -1,6 +1,6 @@
 <template>
-    <button class="item" ref="itemEl" v-on-long-press.onMouseUp="onLongPressFinishCallbackDirective" v-on-long-press="[onLongPressStartCallbackDirective, { delay: 100, modifiers: { stop: true, prevent: true } }]">
-        <article class="item-protector" ref="itemProtectorEl" @click="onPressCallback"></article>
+    <button class="item" ref="itemEl" v-on-long-press.onMouseUp="itemListenersCallbacks.onLongPressFinishCallbackDirective" v-on-long-press="[itemListenersCallbacks.onLongPressStartCallbackDirective, { delay: 100, modifiers: { stop: true, prevent: true } }]">
+        <article class="item-protector" ref="itemProtectorEl" @click="itemListenersCallbacks.onPressCallback"></article>
         <article ref="itemContentEl" class="item-slot">
             <ion-button :id="uniqueId" v-show="false"></ion-button>
             <slot name="item"></slot>
@@ -9,7 +9,7 @@
     
     <article class="popover">
         <section class="popover-modal-holder" v-if="showModal">
-            <ion-modal class="modal" v-if="showModal" :showBackdrop="false" ref="modalEl" :trigger="uniqueId" :enter-animation="enterAnimation" :leave-animation="leaveAnimation" :keepContentsMounted="false">
+            <ion-modal class="modal" v-if="showModal" :showBackdrop="false" ref="modalEl" :trigger="uniqueId" :enter-animation="modalAnimations.enterAnimation" :leave-animation="modalAnimations.leaveAnimation" :keepContentsMounted="false">
                 <article class="item-mirror-area" ref="itemMirrorAreaEl">
                     <slot name="item"></slot>
                 </article>
@@ -27,7 +27,6 @@
                 </article>
             </ion-modal>
         </section>
-        
     </article>
 </template>
 
@@ -50,83 +49,25 @@ const itemContentEl = ref<HTMLElement>();
 const itemMirrorAreaEl = ref<HTMLElement>();
 const isReadyForMoveMoviments = ref(false);
 const hasLongPress = ref(false);
+const isLongPressing = ref(false);
 const popoverSlotContainerEl = ref<HTMLElement>();
 const itemProtectorEl = ref<HTMLElement>();
 const showModal = ref(false);
-let watchableBackdrop:any = null;
+const isScrolling = ref(false);
+let watchableBackdropInstance: {
+    stop: Function
+} | null = null;
 const isOpened = ref(false);
 
 const emit = defineEmits(['onPeek', 'onPop', 'onDismiss']);
-
-const waitForNextTick = async () => {
-    await nextTick();
-}
-const onPressCallback = (ev) => {
-    if (hasLongPress.value) {
-        ev.stopPropagation();
-        ev.preventDefault();
-        hasLongPress.value = false;
-        itemProtectorEl.value.style.zIndex = '-1';
-        return;
-    }
-}
-const onLongPressDone = () => {
-    hasLongPress.value = true;
-    doPeek();
-    setTimeout(() => {
-        itemProtectorEl.value.style.zIndex = '-1';
-        hasLongPress.value = false;
-    }, 100)
-}
-const onLongPressStartCallbackDirective = (ev) => {
-    ev.stopPropagation();
-    
-    setTimeout(() => {
-        onLongPressDone();
-    }, 490)
-}
-const onLongPressFinishCallbackDirective = (ev) => {
-    onShortPressCallbackDirective(ev);
-    if (ev.duration > 500 && ev.duration < 700){
-        onLongPressDone();
-    }
-}
-const onShortPressCallbackDirective = (ev) => {
-    if (!itemContentEl.value){
-        return;
-    }
-
-    requestAnimationFrame(() => {
-        itemContentEl.value.style.transition = 'all 2s ease';
-        requestAnimationFrame(() => {
-            if (!itemContentEl.value){
-                return;
-            }
-            itemContentEl.value.style.scale = '2';
-
-            setTimeout(() => {
-                if (!itemContentEl.value){
-                    return;
-                }
-                itemContentEl.value.style.scale = '1';
-                requestAnimationFrame(() => {
-                    if (!itemContentEl.value){
-                        return;
-                    }
-                    itemContentEl.value.style.transition = 'unset';
-                })
-            }, 300)
-        })
-    })
-}
 
 
 const doPeek = async () => {
     showModal.value = true;
 
-    await waitForNextTick();
+    await nextTick();
 
-    document.getElementById(uniqueId.value).click();
+    document.getElementById(uniqueId.value)?.click();
     Haptics.impact({
         style: ImpactStyle.Heavy
     });
@@ -136,10 +77,6 @@ const doPeek = async () => {
         if (!popoverContentEl.value || !itemContentEl.value || !itemMirrorAreaEl.value){
             return;
         }
-
-
-        //Add a callable method into popoverContentEl:
-        popoverContentEl.value.doClosePeek = closePeek;
 
         const popoverContentRect = popoverContentEl.value?.getBoundingClientRect();
         const itemContentRect = itemContentEl.value?.getBoundingClientRect();
@@ -236,6 +173,10 @@ const closePeek = async (isDismiss: boolean) => {
             const popoverContentRect = popoverContentEl.value?.getBoundingClientRect();
             const itemContentRect = itemContentEl.value?.getBoundingClientRect();
 
+            if (!itemMirrorAreaEl.value || !popoverContentRect || !itemContentRect || !modalEl.value){
+                return;
+            }
+
             itemMirrorAreaEl.value.style.position = 'fixed';
             itemMirrorAreaEl.value.style.top = `${popoverContentRect.top}px`;
             itemMirrorAreaEl.value.style.left = `${popoverContentRect.left}px`;
@@ -273,7 +214,7 @@ const closePeek = async (isDismiss: boolean) => {
                 setTimeout(() => {
                     modalEl.value.$el.dismiss();
                     setTimeout(async () => {
-                        await waitForNextTick();
+                        await nextTick();
                         showModal.value = false;
                     }, 300)
                 }, 300)
@@ -292,7 +233,7 @@ const closePeek = async (isDismiss: boolean) => {
                 setTimeout(() => {
                     modalEl.value.$el.dismiss();
                     setTimeout(async () => {
-                        await waitForNextTick();
+                        await nextTick();
                         showModal.value = false;
                     }, 300)
                 }, 300)
@@ -303,7 +244,7 @@ const closePeek = async (isDismiss: boolean) => {
             setTimeout(() => {
                 modalEl.value.$el.dismiss();
                 setTimeout(async () => {
-                    await waitForNextTick();
+                    await nextTick();
                     showModal.value = false;
                 }, 300)
             }, 300)
@@ -331,9 +272,6 @@ const gestureCallbacks = {
     onStart: () => {
     },
     onMove: (detail: GestureDetail) => {
-        const popoverContentEl = ref(document.querySelector(`[global-register="ion-peek-pop-popover-content"]`));
-        const isReadyForMoveMoviments = ref(popoverContentEl.value?.getAttribute('isReadyForMoveMoviments') === 'true');
-
         if (!popoverContentEl.value || !isReadyForMoveMoviments.value){
             return;
         }
@@ -353,7 +291,6 @@ const gestureCallbacks = {
                 return -((currentMovementChangePercentageX * -1) * windowPadding) / 100;
             }
         }
-
         const calculateMovementChangePercentageY = () => {
             if (detail.deltaY > 0){
                 return (detail.deltaY * 100) / window.innerHeight;
@@ -361,7 +298,6 @@ const gestureCallbacks = {
                 return -(100 - ((detail.currentY * 100) / detail.startY));
             }
         }
-
         const calculateTranslationY = (currentMovementChangePercentageY:number) => {
             const windowPadding = (window.innerHeight - popoverContentEl.value.getBoundingClientRect().height) / 2;
             if (currentMovementChangePercentageY > 0){
@@ -386,17 +322,14 @@ const gestureCallbacks = {
         }
 
 
-
         const currentMovementChangePercentageX = calculateMovementChangePercentageX();
         const currentMovementChangePercentageY = calculateMovementChangePercentageY();
         const currentTranslationX = calculateTranslationX(currentMovementChangePercentageX);
         const currentTranslationY = calculateTranslationY(currentMovementChangePercentageY);
 
-        //Now with currentTranslationX px, the context is the element is top: 50%, left: 50% and current transform: translateX(-50%) translateY(-50%). So, calculate how much translateX should be added to the element in percentage:
         const currentTranslateXPercentage = (currentTranslationX * 100) / popoverContentEl.value?.getBoundingClientRect().width;
         const currentTranslateYPercentage = (currentTranslationY * 100) / popoverContentEl.value?.getBoundingClientRect().height;
 
-        //Get the current translateX value and translateY, save them and add the currentTranslationX value to the translateX value:
 
         const currentTransform = {
             translateX: getTranslateX(popoverContentEl.value),
@@ -422,34 +355,25 @@ const gestureCallbacks = {
 
         const newTag = `translateX(${desiredTransform.translateX}%) translateY(${desiredTransform.translateY}%)`;
 
-
-
-        
-
-
         requestAnimationFrame(() => {
             if (!popoverContentEl.value || !popoverSlotContainerEl.value){
                 return;
             }
             popoverContentEl.value.style.transform = newTag;
             if (currentMovementChangePercentageY > 20){
-                popoverSlotContainerEl.value.style.transform = `scale(${scaleConvert(currentMovementChangePercentageY, [20, 100], [1, 0.2])})`;
+                popoverSlotContainerEl.value.style.transform = `scale(${touchTools.scaleConvert(currentMovementChangePercentageY, [20, 100], [1, 0.2])})`;
             }
         })
 
-
         if (currentMovementChangePercentageX > 80 || currentMovementChangePercentageX < -80){
-            popoverContentEl.value.doClosePeek(true);
+            closePeek(true)
         }else if (currentMovementChangePercentageY > 45 || currentMovementChangePercentageY < -30){
-            popoverContentEl.value.doClosePeek(true);
+            closePeek(true)
         }
-
-    
     },
     onEnd: () => {
         const popoverContentEl = ref(document.querySelector(`[global-register="ion-peek-pop-popover-content"]`));
         const isReadyForMoveMoviments = ref(popoverContentEl.value?.getAttribute('isReadyForMoveMoviments') === 'true');
-
         if (!isReadyForMoveMoviments.value || !popoverContentEl.value){
             return;
         }
@@ -467,15 +391,99 @@ const gestureCallbacks = {
                 popoverContentEl.value.style.transition = 'unset';
             }, 300)
         })
+    },
+    onMoveForPreventScrollTrigger: (detail: GestureDetail) => {
+        if (isLongPressing){
+            if (detail.deltaY > 40 || detail.deltaY < -40){
+                isScrolling.value = true;
+            }
+        }else{
+            isScrolling.value = false;
+        }
+        
+    }
+}
+const itemListenersCallbacks = {
+    onPressCallback: (ev:any) => {
+        if (hasLongPress.value) {
+            ev.stopPropagation();
+            ev.preventDefault();
+            hasLongPress.value = false;
+            (itemProtectorEl.value as HTMLElement).style.zIndex = '-1';
+            return;
+        }
+    },
+    onLongPressDone: () => {
+        hasLongPress.value = true;
+        isLongPressing.value = false;
+        if (isScrolling.value){
+            isScrolling.value = false;
+            return;
+        }
+
+        doPeek();
+        setTimeout(() => {
+            (itemProtectorEl.value as HTMLElement).style.zIndex = '-1';
+            hasLongPress.value = false;
+            isScrolling.value = false;
+        }, 100)
+    },
+    onLongPressStartCallbackDirective: (ev:any) => {
+        ev.stopPropagation();
+        isLongPressing.value = true;
+        isScrolling.value = false;
+
+        setTimeout(() => {
+            itemListenersCallbacks.onLongPressDone();
+        }, 490)
+    },
+    onLongPressFinishCallbackDirective: (ev:any) => {
+        isLongPressing.value = false;
+
+        itemListenersCallbacks.onShortPressCallbackDirective(ev);
+        if (ev.duration > 500 && ev.duration < 700){
+            itemListenersCallbacks.onLongPressDone();
+        }
+    },
+    onShortPressCallbackDirective: (ev:any) => {
+        if (!itemContentEl.value){
+            return;
+        }
+
+        requestAnimationFrame(() => {
+            if (!itemContentEl.value){
+                return;
+            }
+            itemContentEl.value.style.transition = 'all 2s ease';
+            requestAnimationFrame(() => {
+                if (!itemContentEl.value){
+                    return;
+                }
+                itemContentEl.value.style.scale = '2';
+
+                setTimeout(() => {
+                    if (!itemContentEl.value){
+                        return;
+                    }
+                    itemContentEl.value.style.scale = '1';
+                    requestAnimationFrame(() => {
+                        if (!itemContentEl.value){
+                            return;
+                        }
+                        itemContentEl.value.style.transition = 'unset';
+                    })
+                }, 300)
+            })
+        })
     }
 }
 onMounted(() => {
-    watchableBackdrop = useWatchTouch(
-        itemEl.value?.closest('ion-app'),
-        (info) => {
+    watchableBackdropInstance = touchTools.useWatchTouch(
+        (itemEl.value as any)?.closest('ion-app'),
+        () => {
             gestureCallbacks.onStart();
         },
-        (info) => {
+        (info:any) => {
             const detail: GestureDetail = {
                 startX: info.startX,
                 startY: info.startY,
@@ -487,60 +495,189 @@ onMounted(() => {
                 velocityY: info.velocityY,
                 currentTime: 0,
                 event: {} as any,
-                data: {}
+                data: {},
+                startTime: 0,
+                type: ''
             };
             gestureCallbacks.onMove(detail);
+            gestureCallbacks.onMoveForPreventScrollTrigger(detail);
         },
-        (info) => {
+        () => {
             gestureCallbacks.onEnd();
         }
     );
 })
 onUnmounted(() => {
-    watchableBackdrop();
+    watchableBackdropInstance?.stop();
 })
 
 
-const enterAnimation = (baseEl: HTMLElement) => {
-    const root = baseEl.shadowRoot as unknown as any;
+const modalAnimations = {
+    enterAnimation: (baseEl: HTMLElement) => {
+        const root = baseEl.shadowRoot as unknown as any;
 
-    const backdropAnimation = createAnimation()
-        .addElement(root.querySelector('ion-backdrop'))
-        .fromTo('opacity', '0.01', 'var(--backdrop-opacity)');
+        const backdropAnimation = createAnimation()
+            .addElement(root.querySelector('ion-backdrop'))
+            .fromTo('opacity', '0.01', 'var(--backdrop-opacity)');
 
-    const wrapperAnimation = createAnimation()
-        .addElement(root.querySelector('.modal-wrapper'))
-        .keyframes([
-            { offset: 0, opacity: '0', transform: 'scale(1)' },
-            { offset: 1, opacity: '0.99', transform: 'scale(1)' },
-        ]);
+        const wrapperAnimation = createAnimation()
+            .addElement(root.querySelector('.modal-wrapper'))
+            .keyframes([
+                { offset: 0, opacity: '0', transform: 'scale(1)' },
+                { offset: 1, opacity: '0.99', transform: 'scale(1)' },
+            ]);
 
-    return createAnimation()
-        .addElement(baseEl)
-        .easing('ease-out')
-        .duration(300)
-        .addAnimation([backdropAnimation, wrapperAnimation]);
-};
-const leaveAnimation = (baseEl: HTMLElement) => {
-    const root = baseEl.shadowRoot as unknown as any;
+        return createAnimation()
+            .addElement(baseEl)
+            .easing('ease-out')
+            .duration(300)
+            .addAnimation([backdropAnimation, wrapperAnimation]);
+    },
+    leaveAnimation: (baseEl: HTMLElement) => {
+        const root = baseEl.shadowRoot as unknown as any;
 
-    const backdropAnimation = createAnimation()
-        .addElement(root.querySelector('ion-backdrop'))
-        .fromTo('opacity', 'var(--backdrop-opacity)', '0');
+        const backdropAnimation = createAnimation()
+            .addElement(root.querySelector('ion-backdrop'))
+            .fromTo('opacity', 'var(--backdrop-opacity)', '0');
 
-    const wrapperAnimation = createAnimation()
-        .addElement(root.querySelector('.modal-wrapper'))
-        .keyframes([
-            { offset: 0, opacity: '0.99', transform: 'scale(1)' },
-            { offset: 1, opacity: '0', transform: 'scale(1)' },
-        ]);
+        const wrapperAnimation = createAnimation()
+            .addElement(root.querySelector('.modal-wrapper'))
+            .keyframes([
+                { offset: 0, opacity: '0.99', transform: 'scale(1)' },
+                { offset: 1, opacity: '0', transform: 'scale(1)' },
+            ]);
 
-    return createAnimation()
-        .addElement(baseEl)
-        .easing('ease-in')
-        .duration(300)
-        .addAnimation([backdropAnimation, wrapperAnimation]);
-};
+        return createAnimation()
+            .addElement(baseEl)
+            .easing('ease-in')
+            .duration(300)
+            .addAnimation([backdropAnimation, wrapperAnimation]);
+    }
+}
+const touchTools = {
+    useWatchTouch: (
+        el: HTMLElement,
+        onStart: (info: TouchInfo) => void,
+        onMove: (info: TouchInfo) => void,
+        onEnd: (info: TouchInfo) => void
+    ) => {
+        let startX: number, startY: number, lastX: number, lastY: number, startTime: number, lastMoveTime: number;
+        let isTouch: boolean;
+
+        function getDirection(x: number, y: number): TouchInfo['direction'] {
+            const diffX = x - startX;
+            const diffY = y - startY;
+            const absDiffX = Math.abs(diffX);
+            const absDiffY = Math.abs(diffY);
+
+            if (absDiffX > absDiffY) {
+            return diffX > 0 ? 'right' : 'left';
+            } else if (absDiffY > absDiffX) {
+            return diffY > 0 ? 'down' : 'up';
+            }
+            return null;
+        }
+
+        function createTouchInfo(
+            event: MouseEvent | Touch,
+            isFirst: boolean,
+            isFinal: boolean
+        ): TouchInfo {
+            const currentTime = Date.now();
+            const duration = currentTime - startTime;
+            const currentX = 'clientX' in event ? event.clientX : event.pageX;
+            const currentY = 'clientY' in event ? event.clientY : event.pageY;
+
+            const timeDelta = currentTime - lastMoveTime;
+            const velocityX = timeDelta > 0 ? (currentX - lastX) / timeDelta : 0;
+            const velocityY = timeDelta > 0 ? (currentY - lastY) / timeDelta : 0;
+
+            const info: TouchInfo = {
+            touch: isTouch,
+            mouse: !isTouch,
+            position: { top: currentY, left: currentX },
+            direction: getDirection(currentX, currentY),
+            isFirst,
+            isFinal,
+            duration,
+            distance: { x: currentX - startX, y: currentY - startY },
+            offset: { x: currentX - startX, y: currentY - startY },
+            delta: { x: currentX - lastX, y: currentY - lastY },
+            startX,
+            startY,
+            velocityX,
+            velocityY
+            };
+
+            lastX = currentX;
+            lastY = currentY;
+            lastMoveTime = currentTime;
+
+            return info;
+        }
+
+        function handleStart(event: MouseEvent | TouchEvent) {
+            isTouch = event.type.startsWith('touch');
+            const touchEvent = isTouch ? (event as TouchEvent).touches[0] : (event as MouseEvent);
+            startX = lastX = touchEvent.clientX;
+            startY = lastY = touchEvent.clientY;
+            startTime = lastMoveTime = Date.now();
+
+            const info = createTouchInfo(touchEvent, true, false);
+            onStart(info);
+
+            if (isTouch) {
+            document.addEventListener('touchmove', handleMove);
+            document.addEventListener('touchend', handleEnd);
+            } else {
+            document.addEventListener('mousemove', handleMove);
+            document.addEventListener('mouseup', handleEnd);
+            }
+        }
+
+        function handleMove(event: MouseEvent | TouchEvent) {
+            event.preventDefault();
+            const touchEvent = isTouch ? (event as TouchEvent).touches[0] : (event as MouseEvent);
+            const info = createTouchInfo(touchEvent, false, false);
+            onMove(info);
+        }
+
+        function handleEnd(event: MouseEvent | TouchEvent) {
+            const touchEvent = isTouch ? (event as TouchEvent).changedTouches[0] : (event as MouseEvent);
+            const info = createTouchInfo(touchEvent, false, true);
+            onEnd(info);
+
+            if (isTouch) {
+            document.removeEventListener('touchmove', handleMove);
+            document.removeEventListener('touchend', handleEnd);
+            } else {
+            document.removeEventListener('mousemove', handleMove);
+            document.removeEventListener('mouseup', handleEnd);
+            }
+        }
+
+        el.addEventListener('mousedown', handleStart);
+        el.addEventListener('touchstart', handleStart);
+
+        return {
+            stop: () => {
+                el.removeEventListener('mousedown', handleStart);
+                el.removeEventListener('touchstart', handleStart);
+            }
+        }
+    },
+    scaleConvert: (
+        value: number,
+        originalScale: [number, number],
+        newScale: [number, number]
+    ) => {
+        const [originalMin, originalMax] = originalScale;
+        const [newMin, newMax] = newScale;
+        const normalized = (value - originalMin) / (originalMax - originalMin);
+        const newValue = normalized * (newMax - newMin) + newMin;
+        return newValue;
+    }
+}
 
 
 interface TouchInfo {
@@ -557,134 +694,6 @@ interface TouchInfo {
     offset: { x: number; y: number };
     delta: { x: number; y: number };
 }
-  
- function useWatchTouch(
-    el: HTMLElement,
-    onStart: (info: TouchInfo) => void,
-    onMove: (info: TouchInfo) => void,
-    onEnd: (info: TouchInfo) => void
-  ) {
-    let startX: number, startY: number, lastX: number, lastY: number, startTime: number, lastMoveTime: number;
-  let isTouch: boolean;
-
-  function getDirection(x: number, y: number): TouchInfo['direction'] {
-    const diffX = x - startX;
-    const diffY = y - startY;
-    const absDiffX = Math.abs(diffX);
-    const absDiffY = Math.abs(diffY);
-
-    if (absDiffX > absDiffY) {
-      return diffX > 0 ? 'right' : 'left';
-    } else if (absDiffY > absDiffX) {
-      return diffY > 0 ? 'down' : 'up';
-    }
-    return null;
-  }
-
-  function createTouchInfo(
-    event: MouseEvent | Touch,
-    isFirst: boolean,
-    isFinal: boolean
-  ): TouchInfo {
-    const currentTime = Date.now();
-    const duration = currentTime - startTime;
-    const currentX = 'clientX' in event ? event.clientX : event.pageX;
-    const currentY = 'clientY' in event ? event.clientY : event.pageY;
-
-    const timeDelta = currentTime - lastMoveTime;
-    const velocityX = timeDelta > 0 ? (currentX - lastX) / timeDelta : 0;
-    const velocityY = timeDelta > 0 ? (currentY - lastY) / timeDelta : 0;
-
-    const info: TouchInfo = {
-      touch: isTouch,
-      mouse: !isTouch,
-      position: { top: currentY, left: currentX },
-      direction: getDirection(currentX, currentY),
-      isFirst,
-      isFinal,
-      duration,
-      distance: { x: currentX - startX, y: currentY - startY },
-      offset: { x: currentX - startX, y: currentY - startY },
-      delta: { x: currentX - lastX, y: currentY - lastY },
-      startX,
-      startY,
-      velocityX,
-      velocityY
-    };
-
-    lastX = currentX;
-    lastY = currentY;
-    lastMoveTime = currentTime;
-
-    return info;
-  }
-
-  function handleStart(event: MouseEvent | TouchEvent) {
-    isTouch = event.type.startsWith('touch');
-    const touchEvent = isTouch ? (event as TouchEvent).touches[0] : (event as MouseEvent);
-    startX = lastX = touchEvent.clientX;
-    startY = lastY = touchEvent.clientY;
-    startTime = lastMoveTime = Date.now();
-
-    const info = createTouchInfo(touchEvent, true, false);
-    onStart(info);
-
-    if (isTouch) {
-      document.addEventListener('touchmove', handleMove);
-      document.addEventListener('touchend', handleEnd);
-    } else {
-      document.addEventListener('mousemove', handleMove);
-      document.addEventListener('mouseup', handleEnd);
-    }
-  }
-
-  function handleMove(event: MouseEvent | TouchEvent) {
-    event.preventDefault();
-    const touchEvent = isTouch ? (event as TouchEvent).touches[0] : (event as MouseEvent);
-    const info = createTouchInfo(touchEvent, false, false);
-    onMove(info);
-  }
-
-  function handleEnd(event: MouseEvent | TouchEvent) {
-    const touchEvent = isTouch ? (event as TouchEvent).changedTouches[0] : (event as MouseEvent);
-    const info = createTouchInfo(touchEvent, false, true);
-    onEnd(info);
-
-    if (isTouch) {
-      document.removeEventListener('touchmove', handleMove);
-      document.removeEventListener('touchend', handleEnd);
-    } else {
-      document.removeEventListener('mousemove', handleMove);
-      document.removeEventListener('mouseup', handleEnd);
-    }
-  }
-
-  el.addEventListener('mousedown', handleStart);
-  el.addEventListener('touchstart', handleStart);
-
-  return () => {
-    el.removeEventListener('mousedown', handleStart);
-    el.removeEventListener('touchstart', handleStart);
-  };
-}
-
-
-function scaleConvert(
-    value: number,
-    originalScale: [number, number],
-    newScale: [number, number]
-  ): number {
-    const [originalMin, originalMax] = originalScale;
-    const [newMin, newMax] = newScale;
-  
-    // First, normalize the value on a 0-1 scale
-    const normalized = (value - originalMin) / (originalMax - originalMin);
-    
-    // Then, scale it to the new range
-    const newValue = normalized * (newMax - newMin) + newMin;
-    
-    return newValue;
-  }
 </script>
 
 

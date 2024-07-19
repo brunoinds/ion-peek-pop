@@ -1,7 +1,7 @@
 {
   "name": "ion-peek-pop",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Vue 3 component for creating a peek and pop effect on Ionic Framework.",
   "keywords": ["vue", "vue3", "ionic", "peek", "pop", "contextmenu", "3D touch" ,"effect"],
   "repository": {
